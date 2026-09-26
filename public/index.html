@@ -28,6 +28,52 @@
       <article class="project"><h3>Project two</h3><p>Add another project or area of interest.</p></article>
     </section>
     <section id="contact"><h2>Get in touch</h2><p><a href="mailto:hello@example.com">hello@example.com</a></p></section>
+    <section>
+      <h2>Details</h2>
+      <dl id="details"><dt>Loading...</dt></dl>
+      <p></p>
+    </section>
   </main>
 </body>
+
+<script>
+    async function fetchDetails() {
+        const detailsElement = document.getElementById('details');
+      
+    try {
+      const response = await fetch('/details');
+      if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+
+      const data = await response.json();
+     if (!Array.isArray(data)) {
+  throw new Error('Expected an array of people');
+}
+
+const people = data.map((person) => {
+  const article = document.createElement('article');
+  article.className = 'project';
+
+  const name = document.createElement('h3');
+  name.textContent = person.name;
+
+  const occupation = document.createElement('p');
+  occupation.textContent = person.occupation;
+
+  const age = document.createElement('p');
+  age.textContent = `Age: ${person.age}`;
+
+  article.append(name, occupation, age);
+  return article;
+});
+
+detailsElement.replaceChildren(...people);
+      
+    } catch (error) {
+      detailsElement.textContent = 'Could not load details.';
+      console.error(error);
+    }
+    };
+
+    fetchDetails();
+</script>
 </html>
